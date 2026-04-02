@@ -276,10 +276,19 @@ export default function DashboardPage() {
   const isActive = profile?.subscription_status === 'active'; 
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-4 md:p-8 relative">
-      <div className="max-w-6xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gray-950 text-white p-4 md:p-8 relative pb-24 md:pb-8">
+      
+      {/* Mobile Glass Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 bg-gray-900/70 backdrop-blur-xl border-b border-gray-800/50 p-4 z-40 flex justify-between items-center shadow-lg">
+         <h1 className="text-lg font-bold tracking-tight text-white">Player Dashboard</h1>
+         <button onClick={handleSignOut} className="bg-red-900/30 text-red-400 hover:bg-red-900/50 text-xs font-bold py-2 px-3 rounded-lg border border-red-900/50">
+            Sign Out
+         </button>
+      </div>
+
+      <div className="max-w-6xl mx-auto space-y-8 mt-16 md:mt-0">
         
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-800 pb-6 gap-4">
+        <div className="hidden md:flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-800 pb-6 gap-4">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Player Dashboard</h1>
             <p className="text-gray-400 mt-1">{user?.email}</p>
@@ -296,7 +305,7 @@ export default function DashboardPage() {
               <p className="text-gray-300 mt-1">Your Stableford score was selected. Claim your prize of <span className="font-bold text-white">${unclaimedWin.amount.toFixed(2)}</span>.</p>
             </div>
             
-            <div className="mt-4 md:mt-0 relative">
+            <div className="mt-4 md:mt-0 w-full md:w-auto relative">
               <input 
                 type="file" accept="image/*" id={`proof-upload-${unclaimedWin.id}`} className="hidden" 
                 onChange={(e) => handleFileChange(e, unclaimedWin.id)}
@@ -304,7 +313,7 @@ export default function DashboardPage() {
               />
               <label 
                 htmlFor={`proof-upload-${unclaimedWin.id}`}
-                className={`inline-block bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg cursor-pointer ${uploadingId === unclaimedWin.id ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}`}
+                className={`block text-center w-full md:w-auto bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg cursor-pointer ${uploadingId === unclaimedWin.id ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}`}
               >
                 {uploadingId === unclaimedWin.id ? "Uploading File..." : "Select & Upload Proof"}
               </label>
@@ -312,7 +321,7 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl col-span-1">
             <h2 className="text-lg font-semibold mb-4 text-white">Subscription</h2>
@@ -333,17 +342,15 @@ export default function DashboardPage() {
             <p className="text-xs text-gray-500 mt-3 text-center">Billed Monthly or Annually via Stripe</p>
           </div>
 
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl col-span-1 md:col-span-2">
-            <div className="flex justify-between items-start mb-2">
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl col-span-1 lg:col-span-2">
+            <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-3">
               <h2 className="text-lg font-semibold text-green-400">Charity Impact</h2>
-              
               <button 
                 onClick={() => setIsDonationModalOpen(true)} 
-                className="bg-green-600 hover:bg-green-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors shadow-md"
+                className="w-full sm:w-auto bg-green-600 hover:bg-green-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors shadow-md"
               >
                 One-Time Donation
               </button>
-
             </div>
             
             <p className="text-sm text-gray-400 mb-4">You are directing <span className="text-white font-bold">{charityPercent}%</span> of your subscription to your chosen cause.</p>
@@ -354,26 +361,26 @@ export default function DashboardPage() {
               className="w-full accent-green-500 mb-6"
             />
 
-            <div className="p-4 bg-gray-950 rounded-lg border border-gray-800 flex justify-between items-center">
+            <div className="p-4 bg-gray-950 rounded-lg border border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
                 <span className="text-gray-500 text-sm block mb-1">Currently Supporting:</span>
-                <p className="font-medium text-lg">
+                <p className="font-medium text-lg text-white">
                   {profile?.selected_charity_id ? "Charity ID Linked" : "No Charity Selected Yet"}
                 </p>
               </div>
-              <button onClick={() => router.push("/charities")} className="text-blue-400 hover:text-blue-300 text-sm transition-colors border border-blue-900/50 px-4 py-2 rounded-lg bg-blue-900/20">
+              <button onClick={() => router.push("/charities")} className="w-full sm:w-auto text-blue-400 hover:text-blue-300 text-sm transition-colors border border-blue-900/50 px-4 py-2 rounded-lg bg-blue-900/20">
                 Browse Directory &rarr;
               </button>
             </div>
           </div>
 
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl col-span-1 md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl col-span-1 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
              <div>
                 <h2 className="text-lg font-semibold mb-4 text-purple-400">Participation Summary</h2>
                 <div className="bg-gray-950 p-4 rounded-xl border border-gray-800 flex justify-between items-center">
                   <div>
                     <p className="text-sm text-gray-400">Next Official Draw</p>
-                    <p className="font-bold text-lg">End of Current Month</p>
+                    <p className="font-bold text-lg">End of Month</p>
                   </div>
                   <div className="text-right">
                     <p className="text-sm text-gray-400">Eligibility Status</p>
@@ -395,10 +402,10 @@ export default function DashboardPage() {
                   {hasPendingVerifications ? (
                      <div className="text-right">
                        <p className="text-sm text-gray-400 mb-1">Verification Status</p>
-                       <span className="text-yellow-500 text-xs font-bold uppercase animate-pulse">Awaiting Admin Review</span>
+                       <span className="text-yellow-500 text-[10px] md:text-xs font-bold uppercase animate-pulse">Awaiting Admin Review</span>
                      </div>
                   ) : (
-                    <button className="bg-gray-800 text-gray-500 cursor-not-allowed text-sm font-medium py-2 px-4 rounded-lg border border-gray-800" disabled>
+                    <button className="bg-gray-800 text-gray-500 cursor-not-allowed text-xs md:text-sm font-medium py-2 px-3 md:px-4 rounded-lg border border-gray-800" disabled>
                       No Pending Claims
                     </button>
                   )}
@@ -406,7 +413,7 @@ export default function DashboardPage() {
              </div>
           </div>
 
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl col-span-1 md:col-span-3">
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl col-span-1 lg:col-span-3">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
               <div>
                 <h2 className="text-xl font-semibold text-blue-400">Stableford Engine</h2>
@@ -452,9 +459,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Custom Tailwind Donation Modal */}
       {isDonationModalOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
           <div className="bg-gray-900 border border-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md animate-fade-in">
             <h2 className="text-2xl font-bold text-white mb-2">One-Time Donation</h2>
             <p className="text-gray-400 text-sm mb-6">Enter the amount you would like to independently contribute to your selected cause.</p>
@@ -471,16 +477,16 @@ export default function DashboardPage() {
               />
             </div>
 
-            <div className="flex justify-end gap-3">
+            <div className="flex flex-col sm:flex-row justify-end gap-3">
               <button 
                 onClick={() => setIsDonationModalOpen(false)}
-                className="px-5 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition-colors font-medium"
+                className="w-full sm:w-auto px-5 py-3 sm:py-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition-colors font-medium border border-gray-800 sm:border-none"
               >
                 Cancel
               </button>
               <button 
                 onClick={processOneTimeDonation}
-                className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold transition-all shadow-lg shadow-green-900/20"
+                className="w-full sm:w-auto bg-green-600 hover:bg-green-500 text-white px-6 py-3 sm:py-2 rounded-lg font-bold transition-all shadow-lg shadow-green-900/20"
               >
                 Proceed to Checkout
               </button>
@@ -489,9 +495,8 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Beautiful Premium Success Modal with Green Tick */}
       {successMessage && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 z-[60]">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[70] p-4">
           <div className="bg-gray-900 border border-green-500/30 p-8 rounded-2xl shadow-[0_0_40px_rgba(34,197,94,0.15)] w-full max-w-sm animate-fade-in text-center relative overflow-hidden">
             
             <div className="w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/50 shadow-[0_0_20px_rgba(34,197,94,0.3)]">
@@ -512,7 +517,6 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

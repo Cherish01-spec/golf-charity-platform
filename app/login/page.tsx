@@ -52,9 +52,14 @@ export default function LoginPage() {
           subscription_status: "inactive",
           charity_percentage: 10
         });
+
+        // Since email confirmation is disabled in Supabase, we log them in or prompt them to sign in instantly
+        if (data.session) {
+          await routeUserBasedOnRole(data.user.id);
+        } else {
+          setMessage({ text: "Account securely created! You can now click 'Sign In' to access your dashboard.", type: "success" });
+        }
       }
-      // Updated message for strict email verification
-      setMessage({ text: "Account securely created! Please check your email to verify your account before signing in.", type: "warning" });
     }
     setLoading(false);
   };
@@ -78,7 +83,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-2xl transition-all duration-300">
+      <div className="max-w-md w-full bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-2xl transition-all duration-300 animate-fade-in">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white tracking-tight mb-2">Digital Heroes</h1>
           <p className="text-gray-400 text-sm">Secure Authentication</p>
@@ -94,13 +99,13 @@ export default function LoginPage() {
           </div>
 
           {message && (
-            <div className={`p-4 rounded-lg text-sm ${message.type === 'error' ? 'bg-red-900/30 text-red-400 border border-red-800' : message.type === 'warning' ? 'bg-yellow-900/30 text-yellow-400 border border-yellow-800' : 'bg-green-900/30 text-green-400 border border-green-800'}`}>
+            <div className={`p-4 rounded-lg text-sm font-medium ${message.type === 'error' ? 'bg-red-900/30 text-red-400 border border-red-800' : message.type === 'warning' ? 'bg-yellow-900/30 text-yellow-400 border border-yellow-800' : 'bg-green-900/30 text-green-400 border border-green-800'}`}>
               {message.text}
             </div>
           )}
 
           <div className="flex gap-4 pt-2">
-            <button onClick={handleSignIn} disabled={loading} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50">{loading ? "Processing..." : "Sign In"}</button>
+            <button onClick={handleSignIn} disabled={loading} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors shadow-lg shadow-blue-900/20 disabled:opacity-50">{loading ? "Processing..." : "Sign In"}</button>
             <button onClick={handleSignUp} disabled={loading} className="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg border border-gray-700 transition-colors disabled:opacity-50">Create Account</button>
           </div>
         </form>
