@@ -150,6 +150,13 @@ export default function AdminDashboard() {
     fetchAdminData();
   };
 
+  // NEW: Reject function that permanently locks out the user from re-verifying
+  const handleRejectPayout = async (winId: string) => {
+    if (!window.confirm("Reject this proof? The user will not be able to re-submit.")) return;
+    await supabase.from('winnings').update({ status: 'rejected' }).eq('id', winId);
+    fetchAdminData();
+  };
+
   const handleSignOut = async () => { await supabase.auth.signOut(); router.push("/login"); };
 
   if (loading) return <div className="min-h-screen bg-gray-950 flex items-center justify-center text-white">Loading Admin Command...</div>;
@@ -286,7 +293,7 @@ export default function AdminDashboard() {
             </div>
           )}
 
-          {/* Verification Pipeline Tab */}
+          {/* Verification Pipeline Tab - WITH NEW REJECT BUTTON */}
           {activeTab === "winners" && (
             <div className="bg-gray-900 border border-gray-800 rounded-2xl p-4 md:p-6 w-full">
               <h3 className="text-lg font-semibold mb-6">Winner Verification Pipeline</h3>
@@ -299,10 +306,21 @@ export default function AdminDashboard() {
                         <p className="text-sm text-green-400 font-medium mt-1">Prize: ${win.amount.toFixed(2)}</p>
                     </div>
                     <div className="flex flex-wrap items-center gap-3 w-full md:w-auto md:justify-end">
-                        {win.proof_url && <a href={win.proof_url} target="_blank" className="text-blue-400 text-xs md:text-sm font-bold underline hover:text-blue-300 whitespace-nowrap">View Proof Upload</a>}
-                        <span className={`text-[10px] font-black uppercase px-2 py-1 rounded whitespace-nowrap ${win.status === 'paid' ? 'bg-green-900/30 text-green-500' : 'bg-yellow-900/30 text-yellow-500'}`}>{win.status}</span>
+                        {win.proof_url && <a href={win.proof_url} target="_blank" className="text-blue-400 text-xs md:text-sm font-bold underline hover:text-blue-300 whitespace-nowrap">View Proof</a>}
+                        
+                        {/* Dynamic Status Badge */}
+                        <span className={`text-[10px] font-black uppercase px-2 py-1 rounded whitespace-nowrap ${
+                          win.status === 'paid' ? 'bg-green-900/30 text-green-500' : 
+                          win.status === 'rejected' ? 'bg-red-900/30 text-red-500' : 
+                          'bg-yellow-900/30 text-yellow-500'
+                        }`}>{win.status}</span>
+                        
+                        {/* Side-by-side Approve/Reject Buttons */}
                         {win.status === 'pending_verification' && (
-                            <button onClick={() => handleApprovePayout(win.id, win.user_id, win.amount)} className="w-full md:w-auto mt-2 md:mt-0 bg-green-600 hover:bg-green-500 text-white text-xs font-bold px-4 py-3 md:py-2 rounded-lg shadow-md transition-all">Approve Payout</button>
+                            <div className="flex w-full md:w-auto mt-2 md:mt-0 gap-2">
+                                <button onClick={() => handleApprovePayout(win.id, win.user_id, win.amount)} className="flex-1 md:flex-none bg-green-600 hover:bg-green-500 text-white text-xs font-bold px-4 py-3 md:py-2 rounded-lg shadow-md transition-all">Approve</button>
+                                <button onClick={() => handleRejectPayout(win.id)} className="flex-1 md:flex-none bg-red-900/30 hover:bg-red-900/50 border border-red-900/50 text-red-400 text-xs font-bold px-4 py-3 md:py-2 rounded-lg transition-all">Reject</button>
+                            </div>
                         )}
                     </div>
                     </div>
